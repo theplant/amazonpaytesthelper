@@ -1,6 +1,8 @@
 package amazonpaytesthelper
 
 import (
+	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/pkg/errors"
@@ -14,9 +16,31 @@ var (
 	requestTimeout = 3 * time.Second
 )
 
-func AmazonPayTestHelper(account AmazonPayTestAccount) (token string, amazonOrderReferenceId string, err error) {
+func mux(config AmazonPayConfig) http.Handler {
 
+	m := http.NewServeMux()
+
+	m.HandleFunc("/amazon_pay_button", func(w http.ResponseWriter, r *http.Request) {
+		MID := config.MerchantID
+		CID := config.ClientID
+		fmt.Fprintf(w, amazonPayButtonHTML, MID, CID)
+	})
+
+	return m
+}
+
+func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (token string, amazonOrderReferenceId string, err error) {
+
+	go func() {
+		err = http.ListenAndServe(":50203", mux(config))
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+	// driver = agouti.ChromeDriver(agouti.ChromeOptions("headless", "true"))
 	driver = agouti.ChromeDriver()
+
 	driver.Start()
 
 	page, err = driver.NewPage()
@@ -29,17 +53,7 @@ func AmazonPayTestHelper(account AmazonPayTestAccount) (token string, amazonOrde
 		panic(err)
 	}
 
-	err = page.Navigate("https://demo.getqor.com/")
-	if err != nil {
-		panic(err)
-	}
-
-	err = page.FirstByClass("products__list--title").Click()
-	if err != nil {
-		panic(err)
-	}
-
-	err = page.FindByButton("+ ADD TO CART").Click()
+	err = page.Navigate("http://127.0.0.1:50203/amazon_pay_button")
 	if err != nil {
 		panic(err)
 	}
@@ -76,11 +90,11 @@ func AmazonPayTestHelper(account AmazonPayTestAccount) (token string, amazonOrde
 	}
 	time.Sleep(3 * time.Second)
 
-	token, err = page.FindByID("checkout-access-token").Attribute("value")
+	token, err = page.FindByID("amazon_pay_access_token").Attribute("value")
 	if err != nil {
 		panic(err)
 	}
-	amazonOrderReferenceId, err = page.FindByID("checkout-referenceid").Attribute("value")
+	amazonOrderReferenceId, err = page.FindByID("amazon_pay_order_reference_id").Attribute("value")
 	if err != nil {
 		panic(err)
 	}
