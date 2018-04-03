@@ -11,7 +11,32 @@ go get github.com/theplant/amazonpaytesthelper
 ## Usage
 
 ```
-import amazonpaytest "github.com/theplant/amazonpaytest"
+package main
+
+import (
+	"fmt"
+
+	"github.com/theplant/amazonpaytesthelper"
+)
+
+func main() {
+	var account = amazonpaytesthelper.AmazonPayTestAccount{
+		Email:         "123@123.com",
+		EmailPassword: "123456",
+	}
+
+	var config = amazonpaytesthelper.AmazonPayConfig{
+		MerchantID: "your amazonpay MerchantID",
+		ClientID:   "your amazonpay ClientID",
+	}
+
+	tocken, id, err := amazonpaytesthelper.AmazonPayTestHelper(config, account)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Print(tocken, id)
+
+}
 
 ```
 
