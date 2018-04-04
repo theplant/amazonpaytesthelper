@@ -88,7 +88,7 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 	if err != nil {
 		panic(err)
 	}
-	time.Sleep(3 * time.Second)
+	time.Sleep(6 * time.Second)
 
 	token, err = page.FindByID("amazon_pay_access_token").Attribute("value")
 	if err != nil {

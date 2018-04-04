@@ -18,6 +18,8 @@ var amazonPayButtonHTML = `
 
 <div id="amazon_addressbook_widget">
 </div>
+<div id="amazon_wallet_widget">
+</div>
 
 <input type="text" id="amazon_pay_order_reference_id">
 <input type="text" id="amazon_pay_access_token">
@@ -34,6 +36,7 @@ window.onAmazonLoginReady = function () {
 window.onAmazonPaymentsReady = function () {
         showAmazonButton();
         showAmazonAddress();
+        showAmazonWallet();
 };
 
 function showAmazonButton() {
@@ -80,6 +83,26 @@ function showAmazonAddress() {
         onError: function (error) {
         }
     }).bind("amazon_addressbook_widget");
+}
+
+function showAmazonWallet(){
+    new OffAmazonPayments.Widgets.Wallet({
+      sellerId: amazonMerchantId,
+      amazonOrderReferenceId: amazonOrderReferenceId,
+      onPaymentSelect: function(orderReference) {
+        // Replace this code with the action that you want to perform
+        // after the payment method is selected.
+
+        // Ideally this would enable the next action for the buyer
+        // including either a "Continue" or "Place Order" button.
+      },
+      design: {
+        designMode: 'responsive'
+      },
+      onError: function(error) {
+        console.log(error.getErrorCode() + ': ' + error.getErrorMessage());
+      }
+    }).bind("amazon_wallet_widget");
 }
 
 </script>
