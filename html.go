@@ -16,9 +16,11 @@ var amazonPayButtonHTML = `
 </div>
 
 
-<div id="amazon_addressbook_widget">
+<div id="amazon_addressbook_widget" style="height: 500px;">
+addressbook
 </div>
-<div id="amazon_wallet_widget">
+<div id="amazon_wallet_widget" style="height: 500px;">
+wallet
 </div>
 
 <input type="text" id="amazon_pay_order_reference_id">
@@ -36,7 +38,6 @@ window.onAmazonLoginReady = function () {
 window.onAmazonPaymentsReady = function () {
         showAmazonButton();
         showAmazonAddress();
-        showAmazonWallet();
 };
 
 function showAmazonButton() {
@@ -71,9 +72,10 @@ function showAmazonAddress() {
     new OffAmazonPayments.Widgets.AddressBook({
         sellerId: amazonMerchantId,
         onOrderReferenceCreate: function (orderReference) {
-						var amazonOrderReference = orderReference
-						document.getElementById("amazon_pay_order_reference_id").value = orderReference.getAmazonOrderReferenceId();
-						document.getElementById("amazon_pay_access_token").value = getParameterByName('access_token');
+            amazonOrderReferenceId = orderReference.getAmazonOrderReferenceId()
+			document.getElementById("amazon_pay_order_reference_id").value = orderReference.getAmazonOrderReferenceId();
+            document.getElementById("amazon_pay_access_token").value = getParameterByName('access_token');
+            showAmazonWallet(amazonOrderReferenceId)
         },
         design: {
             designMode: 'smartphoneCollapsible'
@@ -85,16 +87,12 @@ function showAmazonAddress() {
     }).bind("amazon_addressbook_widget");
 }
 
-function showAmazonWallet(){
+function showAmazonWallet(amazonOrderReferenceId){
+    console.log("showAmazonWallet")
     new OffAmazonPayments.Widgets.Wallet({
       sellerId: amazonMerchantId,
       amazonOrderReferenceId: amazonOrderReferenceId,
       onPaymentSelect: function(orderReference) {
-        // Replace this code with the action that you want to perform
-        // after the payment method is selected.
-
-        // Ideally this would enable the next action for the buyer
-        // including either a "Continue" or "Place Order" button.
       },
       design: {
         designMode: 'responsive'
