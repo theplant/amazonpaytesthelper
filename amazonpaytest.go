@@ -59,7 +59,7 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 	}
 
 	time.Sleep(1 * time.Second)
-	err = page.FindByClass("amazon-button-image-2017").Click()
+	err = page.FindByClass("amazonpay-button-inner-image").Click()
 	if err != nil {
 		panic(err)
 	}
@@ -79,7 +79,7 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 	if err != nil {
 		panic(err)
 	}
-	err = page.FindByButton("サインイン（セキュリティシステムを使う）").Click()
+	err = page.FindByButton("ログイン（セキュリティシステムを使う）").Click()
 	if err != nil {
 		panic(err)
 	}
@@ -88,7 +88,7 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 	if err != nil {
 		panic(err)
 	}
-	time.Sleep(6 * time.Second)
+	time.Sleep(5 * time.Second)
 
 	token, err = page.FindByID("amazon_pay_access_token").Attribute("value")
 	if err != nil {
