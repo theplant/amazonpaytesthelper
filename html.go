@@ -23,8 +23,16 @@ addressbook
 wallet
 </div>
 
-<input type="text" id="amazon_pay_order_reference_id">
-<input type="text" id="amazon_pay_access_token">
+<input type="text" id="amazon_pay_order_reference_id" class="hiddenvalue">
+<input type="text" id="amazon_pay_access_token" class="hiddenvalue">
+<input type="text" id="amazon_pay_billing_id" class="hiddenvalue">
+
+<style>
+input.hiddenvalue {
+    display: block;
+    width: 500px;
+}
+</style>
 
 <script type="text/javascript">
 var amazonMerchantId = "%s";
@@ -49,10 +57,11 @@ function showAmazonButton() {
         size: "medium",
         authorization: function () {
             loginOptions = {
-                scope: "profile payments:widget payments:shipping_address",
+                scope: "profile postal_code payments:widget payments:shipping_address",
                 popup: "false"
             };
-            authRequest = amazon.Login.authorize(loginOptions, "/amazon_pay_button");
+            authRequest = amazon.Login.authorize(loginOptions,"/amazon_pay_button");
+
         }
     });
 }
@@ -71,16 +80,23 @@ function showAmazonAddress() {
     console.log("showAmazonAddress")
     new OffAmazonPayments.Widgets.AddressBook({
         sellerId: amazonMerchantId,
+        agreementType: 'orderReference',
         onOrderReferenceCreate: function (orderReference) {
+            console.log("onOrderReferenceCreate", orderReference);
             amazonOrderReferenceId = orderReference.getAmazonOrderReferenceId()
-			document.getElementById("amazon_pay_order_reference_id").value = orderReference.getAmazonOrderReferenceId();
+            document.getElementById("amazon_pay_order_reference_id").value = orderReference.getAmazonOrderReferenceId();
             document.getElementById("amazon_pay_access_token").value = getParameterByName('access_token');
             showAmazonWallet(amazonOrderReferenceId)
         },
         design: {
-            designMode: 'smartphoneCollapsible'
+            designMode: 'responsive'
         },
-        onAddressSelect: function (orderReference) {
+        onReady: function(billingAgreement) {
+            var billingAgreementId = billingAgreement.getAmazonBillingAgreementId(); 
+            document.getElementById("amazon_pay_billing_id").value = billingAgreementId ;
+        },
+        onAddressSelect: function (billingAgreement) {
+            console.log("billingAgreement", billingAgreement)
         },
         onError: function (error) {
         }
