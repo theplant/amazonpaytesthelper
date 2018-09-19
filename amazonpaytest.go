@@ -57,7 +57,7 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 	if err != nil {
 		panic(err)
 	}
-
+	fmt.Println(page.String())
 	time.Sleep(1 * time.Second)
 	err = page.FindByClass("amazonpay-button-inner-image").Click()
 	if err != nil {
@@ -70,7 +70,8 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 	}
 
 	err = page.NextWindow()
-
+	time.Sleep(3 * time.Second)
+	fmt.Println(page.String())
 	err = page.FindByID("ap_email").Fill(account.Email)
 	if err != nil {
 		panic(err)
@@ -89,7 +90,7 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 		panic(err)
 	}
 	time.Sleep(5 * time.Second)
-
+	fmt.Println(page.String())
 	token, err = page.FindByID("amazon_pay_access_token").Attribute("value")
 	if err != nil {
 		panic(err)
