@@ -45,58 +45,78 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 
 	page, err = driver.NewPage()
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(errors.Wrap(err, "driver.NewPage failed"))
 	}
 
 	err = page.ClearCookies()
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
 
 	err = page.Navigate("http://127.0.0.1:50203/amazon_pay_button")
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
-	fmt.Println(page.String())
+
 	time.Sleep(1 * time.Second)
+
 	err = page.FindByClass("amazonpay-button-inner-image").Click()
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
 
 	rootWindow, err := page.Session().GetWindow()
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
 
 	err = page.NextWindow()
+	if err != nil {
+		fmt.Println(page.HTML())
+		panic(err)
+	}
+
 	time.Sleep(3 * time.Second)
-	fmt.Println(page.String())
+
 	err = page.FindByID("ap_email").Fill(account.Email)
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
+
 	err = page.AllByName("password").Fill(account.EmailPassword)
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
+
 	err = page.FindByButton("ログイン（セキュリティシステムを使う）").Click()
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
 
 	err = page.Session().SetWindow(rootWindow)
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
+
 	time.Sleep(5 * time.Second)
-	fmt.Println(page.String())
+
 	token, err = page.FindByID("amazon_pay_access_token").Attribute("value")
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
 	amazonOrderReferenceId, err = page.FindByID("amazon_pay_order_reference_id").Attribute("value")
 	if err != nil {
+		fmt.Println(page.HTML())
 		panic(err)
 	}
 
