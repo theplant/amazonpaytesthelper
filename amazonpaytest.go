@@ -34,6 +34,10 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 	go func() {
 		err = http.ListenAndServe(":50203", mux(config))
 		if err != nil {
+			if err.Error() == "listen tcp :50203: bind: address already in use" {
+				err = nil
+				return
+			}
 			panic(err)
 		}
 	}()
