@@ -111,6 +111,7 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 		panic(err)
 	}
 
+	page.HTML()
 	time.Sleep(5 * time.Second)
 
 	token, err = page.FindByID("amazon_pay_access_token").Attribute("value")
