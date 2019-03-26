@@ -99,7 +99,7 @@ func AmazonPayTestHelper(config AmazonPayConfig, account AmazonPayTestAccount) (
 		panic(err)
 	}
 
-	err = page.FindByButton("ログイン（セキュリティシステムを使う）").Click()
+	err = page.FindByButton("Sign in using our secure server").Click()
 	if err != nil {
 		fmt.Println(page.HTML())
 		panic(err)
